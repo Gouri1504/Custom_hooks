@@ -1,15 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react"
 
-const useStorage = (initialValue) => {
-    const storedValue = localStorage.getItem('InputValue') || initialValue;
-    const [input, setInput] = useState(storedValue);
-    
+function saveValue(initValue) {
+    const save = JSON.parse(localStorage.getItem("key")) || JSON.parse(sessionStorage.getItem("key"))
+    return save ? save : initValue
+}
+
+export default function UseStorage(initValue) {
+
+    const [state, setState] = useState(() => {
+        return saveValue(initValue)
+    })
     useEffect(() => {
-        localStorage.setItem('InputValue', input);
-        sessionStorage.setItem('InputValue', input);
-    }, [input]);
-
-    return [input, setInput];
-};
-
-export default useStorage;
+        localStorage.setItem("key", JSON.stringify(state))
+        sessionStorage.setItem("key", JSON.stringify(state))
+    }, [state])
+    return [state, setState]
+}
